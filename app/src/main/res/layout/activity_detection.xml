@@ -10,7 +10,6 @@
         android:gravity="center_horizontal"
         android:padding="16dp">
 
-        <!-- Judul -->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -20,17 +19,12 @@
             android:textStyle="bold"
             android:layout_marginBottom="10dp" />
 
-        <!-- Placeholder Kamera / Preview -->
         <androidx.camera.view.PreviewView
             android:id="@+id/previewView"
             android:layout_width="380dp"
             android:layout_height="520dp"
             android:layout_marginBottom="12dp"
             android:scaleType="fitCenter" />
-
-        <!-- Output Deteksi (Teks dan Background Kuning) -->
-
-        <!-- Tombol Mulai Deteksi -->
 
         <LinearLayout
             android:id="@+id/outputBox"
@@ -47,7 +41,7 @@
                 android:id="@+id/tvLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rambu Hati-Hati"
+                android:text="Status Deteksi"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
@@ -55,14 +49,13 @@
                 android:id="@+id/tvOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Perhatikan sekeliling jalan dan kecepatan Anda"
+                android:text="Menunggu deteksi..."
                 android:textColor="#000000"
                 android:textSize="14sp" />
         </LinearLayout>
 
         <Button
-            android:id="@+id/btnMulaiDeteksi"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnSelesai" android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Selesai Deteksi"
             android:backgroundTint="@android:color/holo_red_dark"

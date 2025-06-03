@@ -3,14 +3,14 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-val camerax_version = "1.3.0"
+val camerax_version = "1.3.3"
 
 android {
-    namespace = "com.example.home_traffic"
+    namespace = "com.example.microzleepz"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.home_traffic"
+        applicationId = "com.example.microzleepz"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -53,4 +53,9 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$camerax_version")
     implementation("androidx.camera:camera-view:$camerax_version")
     implementation("androidx.camera:camera-extensions:$camerax_version")
+
+    // OkHttp untuk HTTP requests
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // GSON untuk parsing JSON
+    implementation("com.google.code.gson:gson:2.10.1")
 }

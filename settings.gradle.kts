@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Home_Traffic"
+rootProject.name = "microzleepz"
 include(":app")
  
