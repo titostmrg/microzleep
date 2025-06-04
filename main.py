@@ -34,7 +34,7 @@ def calculate_ear(landmarks, left_indices, right_indices):
 # Load model TFLite
 interpreter = None
 try:
-    interpreter = tf.lite.Interpreter(model_path="model_microsleep.tflite")
+    interpreter = tf.lite.Interpreter(model_path="model_microsleep2.tflite")
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
