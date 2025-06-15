@@ -11,12 +11,16 @@ android {
 
     defaultConfig {
         applicationId = "com.example.microzleepz"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    aaptOptions {
+        noCompress("tflite", "task")
     }
 
     buildTypes {
@@ -53,6 +57,13 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$camerax_version")
     implementation("androidx.camera:camera-view:$camerax_version")
     implementation("androidx.camera:camera-extensions:$camerax_version")
+
+    // MediaPipe Tasks Vision (Penting untuk FaceLandmarker)
+    implementation("com.google.mediapipe:tasks-vision:0.10.11")
+
+    // TensorFlow Lite (Penting untuk menjalankan model .tflite)
+    implementation("org.tensorflow:tensorflow-lite:2.15.0") // Versi stabil terbaru
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0") // Untuk utilitas TFLite
 
     // OkHttp untuk HTTP requests
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

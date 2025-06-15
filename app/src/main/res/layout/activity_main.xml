@@ -14,7 +14,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Deteksi Rambu Lalu Lintas"
+        android:text="Pendeteksian Microsleep"
         android:textStyle="bold"
         android:textColor="@android:color/black"
         android:textSize="22sp"
@@ -24,7 +24,7 @@
         android:id="@+id/ivSign"
         android:layout_width="200dp"
         android:layout_height="120dp"
-        android:src="@drawable/logoapps"
+        android:src="@drawable/logomicro"
         android:layout_marginBottom="24dp"
         android:scaleType="fitCenter" />
 
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mulai Deteksi"
-        android:textColor="@android:color/white"
-        app:backgroundTint="@android:color/holo_red_dark" />
+        android:textColor="@color/black"
+        app:backgroundTint="#FFEB3B" />
 
 </LinearLayout>

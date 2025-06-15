@@ -14,7 +14,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Deteksi Rambu Lalu Lintas"
+            android:text="Deteksi Microsleep"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="10dp" />
@@ -49,15 +49,30 @@
                 android:id="@+id/tvOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Menunggu deteksi..."
+                android:text="Initializing..."
                 android:textColor="#000000"
                 android:textSize="14sp" />
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvPrediction"  android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Status Deteksi"-->
+<!--                android:textColor="#000000"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvEARValue"    android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="EAR: Calculating..."-->
+<!--                android:textColor="#000000"-->
+<!--                android:textSize="14sp" />-->
+
         </LinearLayout>
 
         <Button
             android:id="@+id/btnSelesai" android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Selesai Deteksi"
+            android:text="Kembali"
             android:backgroundTint="@android:color/holo_red_dark"
             android:textColor="@android:color/white"
             />
