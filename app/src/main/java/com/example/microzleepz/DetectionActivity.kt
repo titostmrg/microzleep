@@ -249,7 +249,7 @@ class DetectionActivity : AppCompatActivity() {
             }
 
             val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(640, 480))
+                .setTargetResolution(Size(320, 240))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setTargetRotation(previewView.display.rotation)
                 .build()
@@ -373,9 +373,7 @@ class DetectionActivity : AppCompatActivity() {
     private fun Float.square(): Float = this * this
 
     // Fungsi untuk melakukan inferensi TFLite
-    // Fungsi untuk melakukan inferensi TFLite
     private fun performTFLiteInference(bitmap: Bitmap, earValue: Float) {
-        // Guard condition tambahan untuk memastikan interpreter tidak null dan activity siap
         if (!isActivityResumedAndReady || tfliteInterpreter == null || scalerMean == null || scalerScale == null) {
             Log.e("DetectionActivity", "TFLite Interpreter or scaler not ready for inference.")
             tvPrediction.text = "Status: Model not ready"
@@ -385,18 +383,36 @@ class DetectionActivity : AppCompatActivity() {
         try {
             // 1. Pra-pemrosesan Gambar untuk Model CNN
             val resizedBitmap = Bitmap.createScaledBitmap(bitmap, MODEL_INPUT_IMAGE_SIZE, MODEL_INPUT_IMAGE_SIZE, false)
-            val inputImageTensor = TensorImage(org.tensorflow.lite.DataType.FLOAT32) // Deklarasikan dengan tipe FLOAT32
-            inputImageTensor.load(resizedBitmap) // Muat bitmap ke dalamnya
-            val inputImageBuffer: ByteBuffer = inputImageTensor.buffer // Kemudian dapatkan buffer
-            inputImageBuffer.rewind() // **PERBAIKAN: Pastikan buffer gambar juga di-rewind**
+
+            // **PERBAIKAN KRUSIAL DI SINI:** Konversi Bitmap ke ByteBuffer FLOAT32 secara manual
+            val inputImageBuffer: ByteBuffer = ByteBuffer.allocateDirect(
+                MODEL_INPUT_IMAGE_SIZE * MODEL_INPUT_IMAGE_SIZE * 3 * 4 // Width * Height * Channels * Bytes_per_float
+            ).order(ByteOrder.nativeOrder())
+
+            // Ambil piksel dari bitmap dan konversi ke float32 (0-1)
+            val intValues = IntArray(MODEL_INPUT_IMAGE_SIZE * MODEL_INPUT_IMAGE_SIZE)
+            resizedBitmap.getPixels(intValues, 0, resizedBitmap.width, 0, 0, resizedBitmap.width, resizedBitmap.height)
+
+            for (pixelValue in intValues) {
+                // Ambil nilai RGB dari pixel (ARGB_8888) dan normalisasi ke 0-1
+                inputImageBuffer.putFloat(((pixelValue shr 16) and 0xFF) / 255.0f) // Red
+                inputImageBuffer.putFloat(((pixelValue shr 8) and 0xFF) / 255.0f)  // Green
+                inputImageBuffer.putFloat((pixelValue and 0xFF) / 255.0f)        // Blue
+            }
+            inputImageBuffer.rewind() // Pastikan buffer di-rewind
+
+            Log.d("InferenceDebug", "Image buffer capacity: ${inputImageBuffer.capacity()} bytes.") // DEBUGGING
 
             // 2. Pra-pemrosesan EAR
             val earScaledValue = (earValue - scalerMean!![0]) / scalerScale!![0]
             val earInputBuffer: ByteBuffer = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder())
             earInputBuffer.putFloat(earScaledValue)
-            earInputBuffer.rewind() // Ini sudah ada
+            earInputBuffer.rewind()
 
-            // Dapatkan detail input tensor dari interpreter
+            Log.d("InferenceDebug", "EAR raw: %.2f, Scaled EAR: %.2f".format(earValue, earScaledValue))
+            Log.d("InferenceDebug", "EAR buffer ready.")
+
+            // Dapatkan detail input tensor dari interpreter (sudah benar)
             val earInputTensorIndex = tfliteInterpreter!!.getInputIndex("serving_default_ear_input:0")
             val imgInputTensorIndex = tfliteInterpreter!!.getInputIndex("serving_default_img_input:0")
 
@@ -409,7 +425,6 @@ class DetectionActivity : AppCompatActivity() {
             }
 
             // Siapkan map input untuk runForMultipleInputsOutputs
-            // Urutan dalam array ini PENTING dan harus sesuai dengan indeks model TFLite: EAR (0), Gambar (1)
             val inputs = arrayOf<Any>(
                 earInputBuffer,    // Input untuk ear_input (indeks 0)
                 inputImageBuffer   // Input untuk img_input (indeks 1)
@@ -420,11 +435,11 @@ class DetectionActivity : AppCompatActivity() {
             val outputs = mutableMapOf<Int, Any>()
             outputs[0] = outputBuffer.buffer
 
-            // Jalankan inferensi dengan multiple inputs dan outputs
+            // Jalankan inferensi
             tfliteInterpreter!!.runForMultipleInputsOutputs(inputs, outputs)
 
             val confidence = outputBuffer.getFloatArray()[0]
-            val label = if (confidence > 0.5) "NORMAL" else "MICROSLEEP"
+            val label = if (confidence > 0.5) "NORMAL" else "MICROSLEEP" // Logika sudah benar berdasarkan validasi Python
 
             runOnUiThread {
                 tvPrediction.text = "Pred: %s, Conf: %.2f".format(label, confidence)
